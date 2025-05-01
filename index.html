@@ -14,6 +14,11 @@
       -webkit-backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
+    #iframe{
+      width: 100%;
+      height: 100%;
+      padding-bottom: 30px;
+    }
   </style>
   <link href="https://play-lh.googleusercontent.com/uvw1hjcjLq2a5dFsbAKxlYJK-5y5JBU2dlIMIEhCj4x309EKYPd3-Jfvu8WnEn5sOAg=s96-rw" rel="icon">
 </head>
@@ -58,10 +63,10 @@
   <!-- Iframe Viewer -->
   <div id="viewer" class="fixed inset-0 top-20 z-40 hidden flex-col">
     <div class="flex justify-between items-center bg-white p-2 shadow-lg z-50">
-      <h3 class="text-lg font-semibold text-gray-700">AI Tool</h3>
+      <h3 id="open_tool_name" class="text-lg font-semibold text-gray-700"></h3>
       <button onclick="closeViewer()" class="text-red-500 text-sm hover:underline">Close</button>
     </div>
-    <iframe id="iframe" class="flex-1 w-full h-full border-none"></iframe>
+    <iframe id="iframe" class="flex-1 border-none"></iframe>
   </div>
 
   <script>
@@ -81,9 +86,11 @@
     const featuresGrid = document.getElementById("features-grid");
     const iframe = document.getElementById("iframe");
     const viewer = document.getElementById("viewer");
+    const open_tool_name = document.getElementById("open_tool_name");
     function openFeature(name, page) {
       saveToRecents(name);
       iframe.src = page;
+      open_tool_name.innerText=name;
       viewer.classList.remove("hidden");
     }
     function closeViewer() {
