@@ -3,137 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://play-lh.googleusercontent.com/uvw1hjcjLq2a5dFsbAKxlYJK-5y5JBU2dlIMIEhCj4x309EKYPd3-Jfvu8WnEn5sOAg=s96-rw" rel="icon">
   <title>AI One Modern</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    body { font-family: 'Inter', sans-serif; }
-    .glass {
-      background: rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
     }
-    #iframe{
+    iframe {
+      border: none;
       width: 100%;
       height: 100%;
-      padding-bottom: 30px;
+      display: block;
     }
   </style>
-  <link href="https://play-lh.googleusercontent.com/uvw1hjcjLq2a5dFsbAKxlYJK-5y5JBU2dlIMIEhCj4x309EKYPd3-Jfvu8WnEn5sOAg=s96-rw" rel="icon">
 </head>
-<body class="bg-gradient-to-br from-blue-100 via-white to-purple-100 h-screen flex flex-col overflow-hidden">
-
-  <!-- Header -->
-  <div class="flex items-center justify-between p-4 bg-white/80 backdrop-blur-md shadow-md rounded-b-xl">
-    <div class="flex items-center gap-3">
-      <img src="https://play-lh.googleusercontent.com/uvw1hjcjLq2a5dFsbAKxlYJK-5y5JBU2dlIMIEhCj4x309EKYPd3-Jfvu8WnEn5sOAg=s96-rw" alt="Logo" class="rounded-full shadow-md" style="height: 40px; width: 40px;" />
-      <h1 class="text-2xl font-bold text-gray-700">AI One</h1>
-    </div>
-    <i class="lucide lucide-bell text-xl text-blue-500" data-lucide="bell"></i>
-  </div>
-
-  <!-- Main Scroll Area -->
-  <div class="flex-1 overflow-y-auto p-4 space-y-6 pb-32">
-    <!-- Recents -->
-    <div>
-      <div class="flex justify-between items-center mb-2">
-        <h2 class="text-lg font-semibold text-gray-800">Recent</h2>
-        <button onclick="clearRecents()" class="text-sm text-blue-500 hover:underline">Clear x</button>
-      </div>
-      <div id="recent-container" class="flex gap-2 overflow-x-auto scrollbar-hide"></div>
-    </div>
-
-    <!-- Features -->
-    <div>
-      <h2 class="text-lg font-semibold text-gray-800 mb-3">Features</h2>
-      <div id="features-grid" class="grid grid-cols-2 gap-4"></div>
-    </div>
-  </div>
-
-  <!-- Bottom Navigation -->
-  <div style="display: none;" class="fixed bottom-0 w-full bg-white/60 backdrop-blur-md border-t shadow-lg flex justify-around py-3 rounded-t-xl">
-    <button class="flex flex-col items-center text-blue-500"><i data-lucide="home"></i><span class="text-xs">Home</span></button>
-    <button class="flex flex-col items-center text-red-500"><i data-lucide="file-text"></i><span class="text-xs">PDF</span></button>
-    <button class="flex flex-col items-center text-orange-500 text-3xl"><i data-lucide="plus-circle"></i></button>
-    <button class="flex flex-col items-center text-blue-400"><i data-lucide="folder"></i><span class="text-xs">File</span></button>
-    <button class="flex flex-col items-center text-purple-500"><i data-lucide="bot"></i><span class="text-xs">GPT</span></button>
-  </div>
-
-  <!-- Iframe Viewer -->
-  <div id="viewer" class="fixed inset-0 top-20 z-40 hidden flex-col">
-    <div class="flex justify-between items-center bg-white p-2 shadow-lg z-50">
-      <h3 id="open_tool_name" class="text-lg font-semibold text-gray-700"></h3>
-      <button onclick="closeViewer()" class="text-red-500 text-sm hover:underline">Close</button>
-    </div>
-    <iframe id="iframe" class="flex-1 border-none"></iframe>
-  </div>
-
-  <script>
-    const features = [
-      { name: "Background Remover", icon: "image-minus", color: "text-red-500", page: "https://sourav520-dis-background-removal.hf.space/" },
-      { name: "AI 3D DRAWING", icon: "box", color: "text-blue-600", page: "https://sourav520-gemini-3d-drawing.hf.space" },
-      { name: "Text to Image", icon: "image", color: "text-green-600", page: "https://agents-course-text-to-image.hf.space/" },
-      { name: "PDF Summarizer", icon: "file-text", color: "text-blue-400", page: "https://tulika2000-ai-pdf-summarizer.hf.space" },
-      { name: "GPT 1.5V", icon: "bot", color: "text-purple-500", page: "https://rizgigho1234.pythonanywhere.com/gpt_ui?model_version=1.5" },
-      { name: "Video", icon: "tv-minimal-play", color: "text-indigo-500", page: "https://rizgigho1234.pythonanywhere.com/video_d" },
-      //{ name: "GPT Image", icon: "image", color: "text-indigo-500", page: "templates/pages/gpt-image.html" },
-      //{ name: "Image Resizer", icon: "crop", color: "text-yellow-500", page: "templates/pages/image-resizer.html" },
-      { name: "GPT 2.0V", icon: "bot", color: "text-purple-700", page: "https://rizgigho1234.pythonanywhere.com/gpt_ui?model_version=2.0" },
-      //{ name: "Text to Audio", icon: "volume-2", color: "text-pink-500", page: "templates/pages/text-audio.html" },
-      //{ name: "Compress PDF", icon: "file-minus", color: "text-red-400", page: "templates/pages/compress-pdf.html" }
-    ];
-    const recentContainer = document.getElementById("recent-container");
-    const featuresGrid = document.getElementById("features-grid");
-    const iframe = document.getElementById("iframe");
-    const viewer = document.getElementById("viewer");
-    const open_tool_name = document.getElementById("open_tool_name");
-    function openFeature(name, page) {
-      saveToRecents(name);
-      iframe.src = page;
-      open_tool_name.innerText=name;
-      viewer.classList.remove("hidden");
-    }
-    function closeViewer() {
-      viewer.classList.add("hidden");
-      iframe.src = "";
-    }
-    function loadRecents() {
-      recentContainer.innerHTML = "";
-      const recent = JSON.parse(localStorage.getItem("recent") || "[]");
-      for (let name of recent) {
-        const feature = features.find(f => f.name === name);
-        const item = document.createElement("div");
-        item.className = "glass flex items-center gap-2 px-3 py-1 text-sm rounded-full shrink-0 shadow text-gray-800 cursor-pointer";
-        item.innerHTML = `<i data-lucide="${feature.icon}" class="${feature.color} w-4 h-4"></i> ${name}`;
-        item.onclick = () => openFeature(name, feature.page);
-        recentContainer.appendChild(item);
-      }
-      lucide.createIcons();
-    }
-    function saveToRecents(name) {
-      let recent = JSON.parse(localStorage.getItem("recent") || "[]");
-      recent = [name, ...recent.filter(i => i !== name)].slice(0, 10);
-      localStorage.setItem("recent", JSON.stringify(recent));
-      loadRecents();
-    }
-    function clearRecents() {
-      localStorage.removeItem("recent");
-      loadRecents();
-    }
-    function renderFeatures() {
-      featuresGrid.innerHTML = "";
-      features.forEach(({ name, icon, color, page }) => {
-        const card = document.createElement("div");
-        card.className = "glass p-4 rounded-2xl shadow-xl flex flex-col items-center text-center cursor-pointer hover:scale-105 transition";
-        card.innerHTML = `<i data-lucide="${icon}" class="${color} w-7 h-7 mb-2"></i><p class="text-sm font-medium text-gray-700">${name}</p>`;
-        card.onclick = () => openFeature(name, page);
-        featuresGrid.appendChild(card);
-      });
-      lucide.createIcons();
-    }
-    renderFeatures();
-    loadRecents();
-  </script>
+<body>
+  <iframe src="https://sourav520-ai-one.hf.space/"></iframe>
 </body>
 </html>
